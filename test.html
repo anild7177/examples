@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html ng-app="chatBox">
+<head>
+    <title>Chat Box</title>
+    <link href="styles/style.css" rel="stylesheet" />
+</head>
+<body ng-controller="chatController">
+
+    <div class="container">
+        <div class="chat-box">
+            <p ng-repeat="chat in chats">
+                <span><strong>{{chat.name}}: </strong></span>
+                <span>{{chat.message}}</span>
+            </p>    
+        </div>
+        <input type="text" ng-model="name" placeholder="Name" />
+        <input type="text" class="message" ng-model="message" placeholder="Message" ng-keydown="sendMessage($event)" />
+    </div>
+
+    <script src="scripts/angular.js"></script>
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="scripts/angularfire.js"></script>
+    <script src="scripts/jquery-2.0.3.min.js"></script>
+
+    <script>
+        var chatBox = angular.module("chatBox", ['firebase']);
+
+        chatBox.controller('chatController', function ($scope, $firebase) {
+            var ref = new Firebase("https://anild.firebaseio.com");
+            $scope.chats = $firebase(ref);
+
+            $scope.sendMessage = function (e) {
+                if (e.keyCode != 13) return;
+
+                $scope.chats.$add({
+                    name: $scope.name,
+                    message: $scope.message
+                });
+
+                $scope.message = "";
+
+                ref.on('child-added', function (data) {
+                    var timer1 = setInterval(function () {
+                        if (data) {
+                            $('.chat-box')[0].scrollTop = $('.chat-box')[0].scrollHeight;
+                            clearInterval(timer1);
+                        }
+                    }, 500);
+                });
+                
+            }
+
+        })
+    </script>
+
+</body>
+</html>

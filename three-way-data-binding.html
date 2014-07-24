@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html ng-app="FireApp">
+<head>
+    <title>Two way data binding</title>
+    <style>
+        .container {
+            width: 800px;
+            margin: 50px auto;
+        }
+
+        .container .note {
+            width: 300px;
+            height: 30px;
+            font-size: 25px;
+            padding: 5px 10px;
+            float: left;
+        }
+
+            .container div {
+                color: #999999;
+                font-family: Verdana;
+                font-size: 21px;
+                margin-left: 30px;
+                width: 400px;
+                float: left;
+
+            }
+    </style>
+</head>
+<body ng-controller="FireController">
+    <div class="container">
+        <h2>Add Note</h2>
+        <input type="text" ng-model="newNote" ng-keydown="addNotes($event)" class="note" />
+        <div class="notes" ng-repeat="note in notes">
+            <span>{{note.text}}</span>
+        </div>
+    </div>
+
+    <script src="scripts/angular.js"></script>
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="scripts/angularfire.js"></script>
+    <script>
+        var FireApp = angular.module('FireApp', ['firebase']);
+
+        FireApp.controller('FireController', function ($scope, $firebase) {
+            var url = "https://anild.firebaseio.com/";
+            var fireRef = new Firebase(url);
+            $scope.notes = $firebase(fireRef);
+
+            $scope.addNotes = function (e) {
+                if (e.keyCode != 13) return;
+
+                $scope.notes.$add({
+                    text: $scope.newNote
+                });
+
+                $scope.newNote = "";
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+﻿.container {
+    width: 800px;
+}
+
+.container .chat-box {
+    width: 600px;
+    height: 400px;
+    border: 3px solid #999;
+    overflow-y: scroll;
+    background-color: #ECECEC;
+    margin-bottom: 15px;
+}
+
+.container .chat-box p {
+    margin: 10px;
+}
+
+.container .message {
+    width: 300px;
+}
